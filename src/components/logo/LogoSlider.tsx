@@ -123,7 +123,7 @@ export default function LogoSlider({
   logos = [
     { src: "/images/auto.png", color: "linear-gradient(135deg, #22c55e 0%, #3b82f6 100%)", label: "AutoDesk" },
     { src: "/images/cad.png", color: "#ef4444", label: "AutoCAD" },
-    { src: "/images/inventor.png", color: "#FF6C37", label: "Inventor" },
+    { src: "/images/inventor.png", color: "#FFD700", label: "Inventor" },
     { src: "/images/fusion.png", color: "#FF6C37", label: "Fusion 360" },
     { src: "/images/p3d.png", color: "#3b82f6", label: "Plant 3D" },
   ],
