@@ -7,7 +7,7 @@ interface FeaturesSectionProps {
 }
 
 export default function FeaturesSection({ isMounted }: FeaturesSectionProps) {
-  const [lightPosition, setLightPosition] = useState({ x: -100, y: 50 })
+  const [lightPosition, setLightPosition] = useState({ x: 50, y: 50 })
   const [isAnimating, setIsAnimating] = useState(true)
   const containerRef = useRef<HTMLDivElement>(null)
   
