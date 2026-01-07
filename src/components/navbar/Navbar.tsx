@@ -29,9 +29,9 @@ export default function Navbar({ scrolled, mobileMenuOpen, setMobileMenuOpen }: 
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-8">
-            <a href="#" className="text-slate-300 hover:text-white transition-colors">Product</a>
+            <a href="/" className="text-slate-300 hover:text-white transition-colors">Home</a>
             <a href="#" className="text-slate-300 hover:text-white transition-colors">Documentation</a>
-            <a href="#" className="text-slate-300 hover:text-white transition-colors">Pricing</a>
+            <a href="/about" className="text-slate-300 hover:text-white transition-colors">About Us</a>
             <a href="#" className="text-slate-300 hover:text-white transition-colors">Blog</a>
             
             <div className="flex items-center gap-4">

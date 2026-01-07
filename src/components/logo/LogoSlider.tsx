@@ -126,6 +126,7 @@ export default function LogoSlider({
     { src: "/images/inventor.png", color: "#FFD700", label: "Inventor" },
     { src: "/images/fusion.png", color: "#FF6C37", label: "Fusion 360" },
     { src: "/images/p3d.png", color: "#3b82f6", label: "Plant 3D" },
+    { src: "/images/zw.png", color: "#3b82f6", label: "ZWCAD" },
   ],
   duplicateSets = 4,
   animationDuration = 40,

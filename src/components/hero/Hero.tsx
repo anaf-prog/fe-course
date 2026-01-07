@@ -162,8 +162,6 @@ export default function Hero() {
         >
           {/* Grid dasar */}
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#1f2937_1px,transparent_1px),linear-gradient(to_bottom,#1f2937_1px,transparent_1px)] bg-[size:4rem_4rem]" />
-          
-          {/* Cahaya akan dibuat di sini - HANYA DI AREA YANG TERLIHAT */}
         </div>
       </div>
 
