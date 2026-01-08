@@ -214,19 +214,17 @@ export default function Hero() {
           <span className="text-slate-300">Mechanical, architectural, electrical, and MEP design in one ecosystem</span>
         </motion.p>
 
-        {/* CTA Buttons - TETAP OREN */}
+        {/* CTA Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.8 }}
           className="mt-12 flex flex-col sm:flex-row gap-4 justify-center items-center"
         >
-          <button className="group relative px-8 py-4 bg-[#FF6C37] hover:bg-[#ff8154] text-white font-bold rounded-lg transition-all duration-300 shadow-[0_0_40px_rgba(255,108,55,0.3)] flex items-center gap-2">
-            Start Building Free
-            <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-          </button>
-          <button className="px-8 py-4 border border-slate-700 hover:border-slate-500 text-slate-300 hover:text-white rounded-lg transition-all duration-300">
-            View Documentation
+          <button className="group relative px-10 py-5 bg-[#FF6C37] hover:bg-[#E55A2B] text-white font-bold rounded-xl transition-all duration-300 shadow-[0_0_50px_rgba(255,108,55,0.4)] hover:shadow-[0_0_80px_rgba(255,108,55,0.6)] hover:scale-105 flex items-center gap-3 text-lg">
+            <Zap className="w-6 h-6" />
+            Start Your CAD Journey Today
+            <ChevronRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
           </button>
         </motion.div>
 
