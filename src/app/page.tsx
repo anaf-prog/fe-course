@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar/Navbar"
 import Hero from "@/components/hero/Hero"
 import LogoSlider from "@/components/logo/LogoSlider"
 import FeaturesSection from "@/components/feature/FeaturesSection"
+import VideoSection from "@/components/feature/VideoSection"
 import Footer from "@/components/footer/Footer"
 
 export default function Home() {
@@ -33,6 +34,8 @@ export default function Home() {
       <LogoSlider />
       
       <FeaturesSection isMounted={isMounted} />
+
+      <VideoSection />
       
       <Footer />
     </div>

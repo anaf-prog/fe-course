@@ -63,10 +63,7 @@ export default function CurriculumTab({ curriculum }: CurriculumTabProps) {
                     <span>{level.projects} Projects</span>
                   </div>
                 </div>
-                
-                <button className="w-full py-3 bg-[#FF6C37] hover:bg-[#ff8154] text-white font-medium rounded-lg transition-colors">
-                  Enroll Now
-                </button>
+
               </div>
             </div>
           </motion.div>

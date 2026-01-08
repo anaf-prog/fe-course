@@ -105,8 +105,8 @@ export default function FeaturesSection({ isMounted }: FeaturesSectionProps) {
           <FeaturesGrid featureGroups={featureGroups} />
         </div>
 
-        {/* Animated Stats */}
-        <StatsSection />
+        {/* Animated Stats --> animasi di non aktifin dulu */}
+        {/* <StatsSection /> */}
       </div>
     </section>
   )

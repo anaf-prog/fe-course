@@ -1,6 +1,7 @@
 import { motion } from "framer-motion"
 import { ChevronRight } from "lucide-react"
 import { FeatureItem } from "./featuresData"
+import Link from "next/link"
 
 interface FeatureCardProps {
   feature: FeatureItem
@@ -61,10 +62,13 @@ function FeatureCard({
         
         {/* Bottom section */}
         <div className="mt-auto pt-6 border-t border-slate-800">
-          <button className="text-[#FF6C37] hover:text-[#ff8154] font-medium flex items-center gap-2 group text-lg">
+          <Link 
+            href={`/class/${feature.id}`}
+            className="text-[#FF6C37] hover:text-[#ff8154] font-medium flex items-center gap-2 group text-lg"
+          >
             Explore Features
             <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
-          </button>
+          </Link>
         </div>
       </div>
     </motion.div>
