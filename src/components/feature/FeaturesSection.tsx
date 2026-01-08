@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react"
-import BackgroundAnimation from "@/components/feature/FeatureSection/BackgroundAnimation"
-import HeaderSection from "@/components/feature/FeatureSection/HeaderSection"
-import AutodeskBackground from "@/components/feature/FeatureSection/AutodeskBackground"
-import { FeaturesGrid } from "@/components/feature/FeatureSection/FeatureCard"
-import StatsSection from "@/components/feature/FeatureSection/StatsSection"
-import { features, FeatureItem } from "@/components/feature/FeatureSection/featuresData"
+import BackgroundAnimation from "@/components/feature/HomeFeatureSection/BackgroundAnimation"
+import HeaderSection from "@/components/feature/HomeFeatureSection/HeaderSection"
+import AutodeskBackground from "@/components/feature/HomeFeatureSection/AutodeskBackground"
+import { FeaturesGrid } from "@/components/feature/HomeFeatureSection/FeatureCard"
+import StatsSection from "@/components/feature/HomeFeatureSection/StatsSection"
+import { features, FeatureItem } from "@/components/feature/HomeFeatureSection/featuresData"
 
 interface FeaturesSectionProps {
   isMounted: boolean

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { ArrowLeft, Zap, Shield, Clock, Users, BookOpen, GraduationCap, CheckCircle, Award, Calendar, Code } from 'lucide-react'
 import Link from 'next/link'
-import { features } from '@/components/feature/FeatureSection/featuresData'
+import { features } from '@/components/feature/HomeFeatureSection/featuresData'
 
 export default function CourseDetailPage() {
   const params = useParams()
