@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Play, ChevronLeft, ChevronRight } from "lucide-react"
 import { FaYoutube } from "react-icons/fa"
@@ -8,26 +8,77 @@ import { videos, VideoCardProps } from "@/components/feature/VideosSection/video
 
 export default function VideoSection() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [visibleCards, setVisibleCards] = useState(1)
+
+  // Inisialisasi ref array
+  useEffect(() => {
+    cardRefs.current = cardRefs.current.slice(0, videos.length)
+  }, [videos.length])
+
+  // Deteksi jumlah card yang terlihat berdasarkan ukuran layar
+  useEffect(() => {
+    const updateVisibleCards = () => {
+      if (typeof window === 'undefined') return
+      
+      const width = window.innerWidth
+      if (width >= 1024) {
+        setVisibleCards(4) // desktop
+      } else if (width >= 640) {
+        setVisibleCards(2) // tablet
+      } else {
+        setVisibleCards(1) // mobile
+      }
+    }
+
+    updateVisibleCards()
+    window.addEventListener('resize', updateVisibleCards)
+    return () => window.removeEventListener('resize', updateVisibleCards)
+  }, [])
 
   const scrollLeft = () => {
-    if (containerRef.current) {
-      const cardWidth = containerRef.current.scrollWidth / videos.length
-      containerRef.current.scrollBy({ left: -cardWidth * 4, behavior: 'smooth' })
+    if (containerRef.current && cardRefs.current[0]) {
+      const container = containerRef.current
+      const cardWidth = cardRefs.current[0].offsetWidth + 24 // width + gap
+      
+      container.scrollBy({ 
+        left: -cardWidth * visibleCards, 
+        behavior: 'smooth' 
+      })
       setCurrentIndex(prev => Math.max(0, prev - 1))
     }
   }
 
   const scrollRight = () => {
-    if (containerRef.current) {
-      const cardWidth = containerRef.current.scrollWidth / videos.length
-      containerRef.current.scrollBy({ left: cardWidth * 4, behavior: 'smooth' })
-      setCurrentIndex(prev => Math.min(Math.ceil(videos.length / 4) - 1, prev + 1))
+    if (containerRef.current && cardRefs.current[0]) {
+      const container = containerRef.current
+      const cardWidth = cardRefs.current[0].offsetWidth + 24 // width + gap
+      
+      container.scrollBy({ 
+        left: cardWidth * visibleCards, 
+        behavior: 'smooth' 
+      })
+      setCurrentIndex(prev => Math.min(
+        Math.ceil(videos.length / visibleCards) - 1, 
+        prev + 1
+      ))
+    }
+  }
+
+  // Handle scroll untuk update currentIndex
+  const handleScroll = () => {
+    if (containerRef.current && cardRefs.current[0]) {
+      const container = containerRef.current
+      const cardWidth = cardRefs.current[0].offsetWidth + 24
+      const scrollLeft = container.scrollLeft
+      const newIndex = Math.round(scrollLeft / (cardWidth * visibleCards))
+      setCurrentIndex(Math.max(0, Math.min(newIndex, Math.ceil(videos.length / visibleCards) - 1)))
     }
   }
 
   const canScrollLeft = currentIndex > 0
-  const canScrollRight = currentIndex < Math.ceil(videos.length / 4) - 1
+  const canScrollRight = currentIndex < Math.ceil(videos.length / visibleCards) - 1
 
   return (
     <section className="relative py-24 overflow-hidden">
@@ -91,12 +142,20 @@ export default function VideoSection() {
                 {/* Scroll Container */}
                 <div 
                 ref={containerRef}
+                onScroll={handleScroll}
                 className="flex overflow-x-auto scrollbar-hide gap-6 pb-8 snap-x snap-mandatory"
-                style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                style={{ 
+                  scrollbarWidth: 'none', 
+                  msOverflowStyle: 'none',
+                  scrollBehavior: 'smooth'
+                }}
                 >
                 {videos.map((video, index) => (
                     <div 
                     key={index} 
+                    ref={(el: HTMLDivElement | null) => {
+                      cardRefs.current[index] = el
+                    }}
                     className="flex-shrink-0 w-[calc(100%-1rem)] sm:w-[calc(50%-1.5rem)] lg:w-[calc(25%-1.5rem)] snap-start"
                     >
                     <VideoCard {...video} />
