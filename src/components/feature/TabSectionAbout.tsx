@@ -1,16 +1,16 @@
 import { useState } from "react"
-import TabsNavigation from "@/components/feature/TabSection/TabNavigation"
-import AboutTab from "@/components/feature/TabSection/AboutTab"
-import TeamTab from "@/components/feature/TabSection/TeamTab"
-import CurriculumTab from "@/components/feature/TabSection/CurriculumTab"
-import FacilitiesTab from "@/components/feature/TabSection/FacilitiesTab"
+import TabsNavigation from "@/components/feature/TabAboutSection/TabNavigation"
+import AboutTab from "@/components/feature/TabAboutSection/AboutTab"
+import TeamTab from "@/components/feature/TabAboutSection/TeamTab"
+import CurriculumTab from "@/components/feature/TabAboutSection/CurriculumTab"
+import FacilitiesTab from "@/components/feature/TabAboutSection/FacilitiesTab"
 import {
   instructors,
   learningMethods,
   curriculum,
   facilities,
   tabs
-} from "@/components/feature/TabSection/data"
+} from "@/components/feature/TabAboutSection/data"
 
 export default function TabsSection() {
   const [activeTab, setActiveTab] = useState("about")
