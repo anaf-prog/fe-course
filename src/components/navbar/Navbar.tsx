@@ -59,7 +59,7 @@ export default function Navbar({ scrolled, mobileMenuOpen, setMobileMenuOpen }: 
             className="md:hidden mt-4 pb-4 border-t border-slate-800 pt-4"
           >
             <div className="flex flex-col gap-4">
-              <a href="#" className="text-slate-300 hover:text-white py-2">Product</a>
+              <a href="/" className="text-slate-300 hover:text-white transition-colors">Home</a>
               <a href="#" className="text-slate-300 hover:text-white py-2">Documentation</a>
               <a href="/about" className="text-slate-300 hover:text-white transition-colors">About Us</a>
               <a href="#" className="text-slate-300 hover:text-white py-2">Blog</a>
