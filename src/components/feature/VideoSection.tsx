@@ -191,8 +191,9 @@ export default function VideoSection() {
               href="https://www.youtube.com/@indonesiandraftingschool6818" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="px-8 py-3 bg-[#FF6C37] hover:bg-[#ff8154] text-white font-medium rounded-lg transition-all duration-300 hover:shadow-[0_0_40px_rgba(255,108,55,0.3)] whitespace-nowrap"
+              className="px-8 py-3 bg-[#FF6C37] hover:bg-[#E55A2B] text-white font-medium rounded-lg transition-all duration-300 hover:shadow-[0_0_40px_rgba(255,108,55,0.3)] whitespace-nowrap flex items-center gap-2"
             >
+              <FaYoutube className="w-5 h-5" />
               Visit Channel
             </a>
           </div>
