@@ -146,32 +146,7 @@ const ACADAnimation = () => {
                 }}
               />
               
-              {/* Command Display untuk mobile saja - di desktop hanya ada di footer */}
-              {isMobile && (
-                <div className="absolute bottom-2 left-2 bg-black/90 border border-gray-700 px-2 py-1 rounded text-xs font-mono w-[calc(100%-1rem)]">
-                  <div className="text-green-400 text-xs">
-                    Command: <span className="text-cyan-200">{commandText}</span>
-                    <span className={`ml-1 ${showCursor ? 'opacity-100' : 'opacity-0'}`}>▌</span>
-                  </div>
-                  <div className="text-gray-400 mt-1 flex justify-between items-center">
-                    <span className="text-xs">
-                      {currentStep < animationSteps.length ? 
-                        `Step ${currentStep + 1}/${animationSteps.length}` : 
-                        'Complete'}
-                    </span>
-                    <span className="text-cyan-300 text-xs truncate ml-2">
-                      {currentStep < 14 ? 'Drawing Rectangle' : 
-                      currentStep < 19 ? 'Drawing Circle' : 
-                      currentStep < 29 ? 'Adding Dimensions' : 
-                      currentStep < 30 ? 'Preparing Triangle' :
-                      currentStep < 37 ? 'Drawing Triangle' :
-                      currentStep < 46 ? 'Adding Triangle Dimensions' :
-                      'Completed'}
-                    </span>
-                  </div>
-                </div>
-              )}
-              
+              {/* Command Display dihapus untuk mobile dan desktop */}
               {/* Red Dot Info - hidden on mobile */}
               {!isMobile && (
                 <div className="absolute top-4 left-4 bg-black/80 border border-red-800 px-3 py-2 rounded text-xs font-mono">
@@ -212,15 +187,15 @@ const ACADAnimation = () => {
             </div>
           </div>
         ) : (
-          // Mobile: hanya status progress sederhana
+          // Mobile: hanya status progress sederhana (tanpa command line)
           <div className="bg-black border-t border-gray-800 px-3 py-2">
-            <div className="flex items-center justify-between text-xs font-mono">
+            <div className="flex items-center justify-between text-xs">
               <span className="text-gray-400">
                 {currentStep < animationSteps.length ? 
                   `Step ${currentStep + 1} of ${animationSteps.length}` : 
                   'Animation Complete'}
               </span>
-              <span className="text-cyan-300">
+              <span className="text-cyan-300 font-mono">
                 {Math.round((currentStep / animationSteps.length) * 100)}%
               </span>
             </div>
