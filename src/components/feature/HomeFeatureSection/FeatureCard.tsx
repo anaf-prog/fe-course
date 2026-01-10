@@ -66,7 +66,7 @@ function FeatureCard({
             href={`/class/${feature.id}`}
             className="text-[#FF6C37] hover:text-[#ff8154] font-medium flex items-center gap-2 group text-lg"
           >
-            Explore Features
+            Explore Course
             <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform duration-300" />
           </Link>
         </div>
