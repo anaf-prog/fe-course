@@ -10,17 +10,31 @@ const ACADAnimation = () => {
   const [currentStep, setCurrentStep] = useState(0)
   const [commandText, setCommandText] = useState('')
   const [showCursor, setShowCursor] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
 
+  // Detect mobile screen
   useEffect(() => {
-    // Cursor blink effect
-    const cursorInterval = setInterval(() => {
-      setShowCursor(prev => !prev)
-    }, 500)
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
     
-    return () => clearInterval(cursorInterval)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    
+    return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // FIX: Perbaikan typing animation dengan menghapus delay yang menyebabkan race condition
+  useEffect(() => {
+    // Cursor blink effect hanya untuk desktop (di footer)
+    if (!isMobile) {
+      const cursorInterval = setInterval(() => {
+        setShowCursor(prev => !prev)
+      }, 500)
+      
+      return () => clearInterval(cursorInterval)
+    }
+  }, [isMobile])
+
   useEffect(() => {
     let typingInterval
     let typeWriter
@@ -72,8 +86,13 @@ const ACADAnimation = () => {
     if (!canvas) return
     
     const ctx = canvas.getContext('2d')
-    const width = canvas.width
-    const height = canvas.height
+    // Set canvas dimensions based on screen size
+    const width = isMobile ? 400 : 800
+    const height = isMobile ? 250 : 500
+    
+    // Update canvas dimensions
+    canvas.width = width
+    canvas.height = height
     
     let animationFrame
     let time = 0
@@ -90,76 +109,81 @@ const ACADAnimation = () => {
     return () => {
       cancelAnimationFrame(animationFrame)
     }
-  }, [currentStep])
+  }, [currentStep, isMobile])
 
   const dotPos = getRedDotPosition(currentStep)
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-8">
-      <div className="bg-gray-900 border border-gray-700 rounded-xl overflow-hidden shadow-2xl shadow-cyan-900/20">
+    <div className="w-full max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-8">
+      <div className="bg-gray-900 border border-gray-700 rounded-lg sm:rounded-xl overflow-hidden shadow-xl sm:shadow-2xl shadow-cyan-900/20">
         {/* AutoCAD Header Bar */}
-        <div className="bg-gradient-to-r from-gray-800 to-gray-900 px-6 py-3 border-b border-gray-700 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="bg-gradient-to-r from-gray-800 to-gray-900 px-3 sm:px-6 py-2 sm:py-3 border-b border-gray-700 flex items-center justify-between">
+          <div className="flex items-center gap-2 sm:gap-4">
             <div className="flex gap-1">
-              <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-              <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-              <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full"></div>
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full"></div>
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full"></div>
             </div>
-            <div className="text-cyan-300 font-mono text-sm">
+            <div className="text-cyan-300 font-mono text-xs sm:text-sm truncate">
               AutoCAD 2024 - [Drawing1.dwg]
             </div>
           </div>
-          <div className="text-gray-400 text-sm font-mono">
+          <div className="text-gray-400 text-xs sm:text-sm font-mono hidden sm:block">
             Model Space •
           </div>
         </div>
 
         <div className="flex flex-col lg:flex-row">
           {/* Main Drawing Area */}
-          <div className="lg:w-3/4 p-6">
+          <div className="lg:w-3/4 p-3 sm:p-6">
             <div className="relative">
               <canvas
                 ref={canvasRef}
-                width={800}
-                height={500}
                 className="w-full h-auto bg-gray-950 rounded-lg border-2 border-gray-800"
+                style={{ 
+                  height: isMobile ? '250px' : '500px',
+                  maxHeight: isMobile ? '250px' : '500px'
+                }}
               />
               
-              {/* Command Display */}
-              <div className="absolute bottom-4 left-4 bg-black/90 border border-gray-700 px-3 py-2 rounded text-xs font-mono min-w-[300px]">
-                <div className="text-green-400">
-                  Command: <span className="text-cyan-200">{commandText}</span>
-                  <span className={`ml-1 ${showCursor ? 'opacity-100' : 'opacity-0'}`}>▌</span>
+              {/* Command Display untuk mobile saja - di desktop hanya ada di footer */}
+              {isMobile && (
+                <div className="absolute bottom-2 left-2 bg-black/90 border border-gray-700 px-2 py-1 rounded text-xs font-mono w-[calc(100%-1rem)]">
+                  <div className="text-green-400 text-xs">
+                    Command: <span className="text-cyan-200">{commandText}</span>
+                    <span className={`ml-1 ${showCursor ? 'opacity-100' : 'opacity-0'}`}>▌</span>
+                  </div>
+                  <div className="text-gray-400 mt-1 flex justify-between items-center">
+                    <span className="text-xs">
+                      {currentStep < animationSteps.length ? 
+                        `Step ${currentStep + 1}/${animationSteps.length}` : 
+                        'Complete'}
+                    </span>
+                    <span className="text-cyan-300 text-xs truncate ml-2">
+                      {currentStep < 14 ? 'Drawing Rectangle' : 
+                      currentStep < 19 ? 'Drawing Circle' : 
+                      currentStep < 29 ? 'Adding Dimensions' : 
+                      currentStep < 30 ? 'Preparing Triangle' :
+                      currentStep < 37 ? 'Drawing Triangle' :
+                      currentStep < 46 ? 'Adding Triangle Dimensions' :
+                      'Completed'}
+                    </span>
+                  </div>
                 </div>
-                <div className="text-gray-400 mt-1 flex justify-between">
-                  <span>
-                    {currentStep < animationSteps.length ? 
-                      `Step ${currentStep + 1}/${animationSteps.length}` : 
-                      'Animation Complete'}
-                  </span>
-                  <span className="text-cyan-300">
-                    {currentStep < 14 ? 'Drawing Rectangle' : 
-                    currentStep < 19 ? 'Drawing Circle' : 
-                    currentStep < 29 ? 'Adding Dimensions' : 
-                    currentStep < 30 ? 'Preparing Triangle' :
-                    currentStep < 37 ? 'Drawing Triangle' :
-                    currentStep < 46 ? 'Adding Triangle Dimensions' :
-                    'Completed'}
-                  </span>
-                </div>
-              </div>
+              )}
               
-              {/* Red Dot Info */}
-              <div className="absolute top-4 left-4 bg-black/80 border border-red-800 px-3 py-2 rounded text-xs font-mono">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                  <span className="text-red-300">Tracking Point</span>
+              {/* Red Dot Info - hidden on mobile */}
+              {!isMobile && (
+                <div className="absolute top-4 left-4 bg-black/80 border border-red-800 px-3 py-2 rounded text-xs font-mono">
+                  <div className="flex items-center gap-2 mb-1">
+                    <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+                    <span className="text-red-300">Tracking Point</span>
+                  </div>
+                  <div className="text-gray-300">
+                    Follows cursor during drawing
+                  </div>
                 </div>
-                <div className="text-gray-300">
-                  Follows cursor during drawing
-                </div>
-              </div>
-              
+              )}
             </div>
           </div>
 
@@ -168,23 +192,40 @@ const ACADAnimation = () => {
             currentStep={currentStep} 
             animationSteps={animationSteps}
             dotPos={dotPos}
+            isMobile={isMobile}
           />
         </div>
 
-        {/* AutoCAD Command Line Footer */}
-        <div className="bg-black border-t border-gray-800 px-6 py-3">
-          <div className="flex items-center justify-between text-xs font-mono">
-            <div className="text-cyan-300">
-              <span className="text-green-400">Command:</span> {commandText}
-              <span className={`ml-1 ${showCursor ? 'opacity-100' : 'opacity-0'}`}>_</span>
-            </div>
-            <div className="text-gray-500 font-mono">
-              {currentStep < animationSteps.length ? 
-                `>> ${animationSteps[currentStep].cmd}` : 
-                '>> Ready for next command...'}
+        {/* AutoCAD Command Line Footer - desktop saja */}
+        {!isMobile ? (
+          <div className="bg-black border-t border-gray-800 px-6 py-3">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <div className="text-cyan-300">
+                <span className="text-green-400">Command:</span> {commandText}
+                <span className={`ml-1 ${showCursor ? 'opacity-100' : 'opacity-0'}`}>_</span>
+              </div>
+              <div className="text-gray-500 font-mono">
+                {currentStep < animationSteps.length ? 
+                  `>> ${animationSteps[currentStep].cmd}` : 
+                  '>> Ready for next command...'}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          // Mobile: hanya status progress sederhana
+          <div className="bg-black border-t border-gray-800 px-3 py-2">
+            <div className="flex items-center justify-between text-xs font-mono">
+              <span className="text-gray-400">
+                {currentStep < animationSteps.length ? 
+                  `Step ${currentStep + 1} of ${animationSteps.length}` : 
+                  'Animation Complete'}
+              </span>
+              <span className="text-cyan-300">
+                {Math.round((currentStep / animationSteps.length) * 100)}%
+              </span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )
