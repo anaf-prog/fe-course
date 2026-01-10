@@ -61,7 +61,6 @@ const ACADAnimation = () => {
     return () => clearInterval(cursorInterval)
   }, [])
 
-  // Animation steps - FIXED untuk sinkronisasi antara command dan gambar
   useEffect(() => {
     let typingInterval
     let typeWriter
@@ -80,8 +79,6 @@ const ACADAnimation = () => {
         } else {
           clearInterval(typingInterval)
           
-          // Timer untuk berpindah ke step berikutnya
-          // Gunakan delay dari step yang sesuai dengan animasi
           stepTimer = setTimeout(() => {
             setCurrentStep(prev => {
               const nextStep = prev + 1
@@ -92,7 +89,6 @@ const ACADAnimation = () => {
       }, 40) // Kecepatan typing: 40ms per karakter
       
     } else {
-      // Ketika mencapai akhir, tunggu 3 detik lalu reset ke awal
       typeWriter = setTimeout(() => {
         setCurrentStep(0)
         setCommandText('')
@@ -106,7 +102,6 @@ const ACADAnimation = () => {
     }
   }, [currentStep])
 
-  // Canvas drawing animation - DIUBAH untuk sinkronisasi yang lebih baik
   useEffect(() => {
     if (!canvasReady || !canvasRef.current) return
     
@@ -121,15 +116,12 @@ const ACADAnimation = () => {
     const draw = () => {
       // Clear canvas terlebih dahulu
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      
-      // Pastikan canvas memiliki ukuran yang benar
+
       if (canvas.width === 0 || canvas.height === 0) {
         canvas.width = isMobile ? 400 : 800
         canvas.height = isMobile ? 300 : 500
       }
-      
-      // Gambar animasi berdasarkan currentStep
-      // Jika currentStep melebihi jumlah step, gambar step terakhir
+
       const stepToDraw = Math.min(currentStep, animationSteps.length - 1)
       drawCanvas(ctx, canvas.width, canvas.height, stepToDraw, time, canvasDimensions)
       
@@ -193,6 +185,34 @@ const ACADAnimation = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row">
+          {/* Command Display untuk mobile */}
+          {isMobile && (
+            <div className="w-full px-3 pt-3 pb-2 bg-gray-900/80 border-b border-gray-800">
+              <div className="bg-black/90 border border-gray-700 px-3 py-2 rounded text-xs font-mono backdrop-blur-sm">
+                <div className="text-green-400 text-xs">
+                  Command: <span className="text-cyan-200">{commandText}</span>
+                  <span className={`ml-1 ${showCursor ? 'opacity-100' : 'opacity-0'}`}>▌</span>
+                </div>
+                <div className="text-gray-400 mt-1 flex justify-between items-center">
+                  <span className="text-xs">
+                    {currentStep < animationSteps.length ? 
+                      `Step ${currentStep + 1}/${animationSteps.length}` : 
+                      'Complete - Restarting...'}
+                  </span>
+                  <span className="text-cyan-300 text-xs truncate ml-2">
+                    {currentStep < 6 ? 'Setting up...' :
+                    currentStep < 15 ? 'Drawing Rectangle' : 
+                    currentStep < 20 ? 'Drawing Circle' : 
+                    currentStep < 30 ? 'Adding Dimensions' : 
+                    currentStep < 37 ? 'Drawing Triangle' :
+                    currentStep < 46 ? 'Adding Triangle Dims' :
+                    'Zooming & Complete'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Main Drawing Area */}
           <div className="lg:w-3/4 p-3 sm:p-6">
             <div className="relative flex justify-center">
@@ -207,32 +227,6 @@ const ACADAnimation = () => {
                     background: '#0a0a0a'
                   }}
                 />
-                
-                {/* Command Display untuk mobile */}
-                {isMobile && (
-                  <div className="absolute bottom-2 left-2 right-2 bg-black/90 border border-gray-700 px-3 py-2 rounded text-xs font-mono backdrop-blur-sm">
-                    <div className="text-green-400 text-xs">
-                      Command: <span className="text-cyan-200">{commandText}</span>
-                      <span className={`ml-1 ${showCursor ? 'opacity-100' : 'opacity-0'}`}>▌</span>
-                    </div>
-                    <div className="text-gray-400 mt-1 flex justify-between items-center">
-                      <span className="text-xs">
-                        {currentStep < animationSteps.length ? 
-                          `Step ${currentStep + 1}/${animationSteps.length}` : 
-                          'Complete - Restarting...'}
-                      </span>
-                      <span className="text-cyan-300 text-xs truncate ml-2">
-                        {currentStep < 6 ? 'Setting up...' :
-                        currentStep < 15 ? 'Drawing Rectangle' : 
-                        currentStep < 20 ? 'Drawing Circle' : 
-                        currentStep < 30 ? 'Adding Dimensions' : 
-                        currentStep < 37 ? 'Drawing Triangle' :
-                        currentStep < 46 ? 'Adding Triangle Dims' :
-                        'Zooming & Complete'}
-                      </span>
-                    </div>
-                  </div>
-                )}
 
               </div>
             </div>
@@ -245,6 +239,8 @@ const ACADAnimation = () => {
             dotPos={dotPos}
             isMobile={isMobile}
             canvasDimensions={canvasDimensions}
+            commandText={commandText}
+            showCursor={showCursor}   
           />
         </div>
 
@@ -273,25 +269,6 @@ const ACADAnimation = () => {
         )}
       </div>
       
-      {/* Debug info untuk mobile */}
-      {isMobile && process.env.NODE_ENV === 'development' && (
-        <div className="mt-4 p-2 bg-yellow-900/20 border border-yellow-700 rounded text-xs text-yellow-200">
-          <div className="grid grid-cols-2 gap-2">
-            <div>
-              Canvas: {canvasDimensions.width}x{canvasDimensions.height}
-            </div>
-            <div>
-              Step: {currentStep}/{animationSteps.length}
-            </div>
-            <div>
-              Scale: {(canvasDimensions.width/800).toFixed(2)}x
-            </div>
-            <div>
-              Rectangle: {Math.round(200 * (canvasDimensions.width/800))}x{Math.round(200 * (canvasDimensions.height/500))}
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }

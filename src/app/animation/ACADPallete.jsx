@@ -1,10 +1,37 @@
-const ACADPalette = ({ currentStep, animationSteps, dotPos, isMobile, canvasDimensions }) => {
+const ACADPalette = ({ currentStep, animationSteps, dotPos, isMobile, canvasDimensions, commandText, showCursor }) => {
   // Hitung ukuran yang di-scaling
   const scaledRectWidth = Math.round(200 * (canvasDimensions?.width / 800) || 200)
   const scaledRectHeight = Math.round(200 * (canvasDimensions?.height / 500) || 200)
   
   return (
-    <div className={`${isMobile ? 'w-full' : 'lg:w-1/4'} p-3 sm:p-6 ${isMobile ? 'border-t' : 'border-l'} border-gray-800 bg-gray-900/50`}>
+    <div className={`${isMobile ? 'w-full' : 'lg:w-1/4'} ${isMobile ? 'border-t' : 'border-l'} border-gray-800 bg-gray-900/50`}>
+      {/* Command Display untuk mobile - sekarang ada di sini */}
+      {isMobile && commandText !== undefined && (
+        <div className="p-3 border-b border-gray-800 bg-black/90">
+          <div className="text-green-400 text-xs font-mono mb-1">
+            Command: <span className="text-cyan-200">{commandText}</span>
+            <span className={`ml-1 ${showCursor ? 'opacity-100' : 'opacity-0'}`}>▌</span>
+          </div>
+          <div className="text-gray-400 text-xs flex justify-between">
+            <span>
+              {currentStep < animationSteps.length ? 
+                `Step ${currentStep + 1}/${animationSteps.length}` : 
+                'Complete'}
+            </span>
+            <span className="text-cyan-300">
+              {currentStep < 6 ? 'Setup' :
+              currentStep < 15 ? 'Rectangle' : 
+              currentStep < 20 ? 'Circle' : 
+              currentStep < 30 ? 'Dimensions' : 
+              currentStep < 37 ? 'Triangle' :
+              currentStep < 46 ? 'Triangle Dims' :
+              'Complete'}
+            </span>
+          </div>
+        </div>
+      )}
+      
+      <div className="p-3 sm:p-6">
       {isMobile ? (
         // Mobile layout - more compact
         <div className="space-y-4">
@@ -87,7 +114,6 @@ const ACADPalette = ({ currentStep, animationSteps, dotPos, isMobile, canvasDime
           </div>
         </div>
       ) : (
-        // Desktop layout
         <>
           <h3 className="text-cyan-300 font-mono mb-4 text-sm border-b border-gray-800 pb-2">
             Tool Palette
@@ -178,6 +204,7 @@ const ACADPalette = ({ currentStep, animationSteps, dotPos, isMobile, canvasDime
           </div>
         </>
       )}
+      </div>
     </div>
   )
 }

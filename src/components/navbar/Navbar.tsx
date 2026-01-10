@@ -35,7 +35,7 @@ export default function Navbar({ scrolled, mobileMenuOpen, setMobileMenuOpen }: 
             <a href="#" className="text-slate-300 hover:text-white transition-colors">Blog</a>
             
             <div className="flex items-center gap-4">
-              <button className="text-slate-300 hover:text-white px-4 py-2">Sign In</button>
+              {/* <button className="text-slate-300 hover:text-white px-4 py-2">Sign In</button> */}
               <button className="bg-[#FF6C37] hover:bg-[#FF5500] text-white px-6 py-2 rounded-md transition-colors">
                 Get Started
               </button>
@@ -60,15 +60,8 @@ export default function Navbar({ scrolled, mobileMenuOpen, setMobileMenuOpen }: 
           >
             <div className="flex flex-col gap-4">
               <a href="/" className="text-slate-300 hover:text-white transition-colors">Home</a>
-              <a href="#" className="text-slate-300 hover:text-white py-2">Documentation</a>
               <a href="/about" className="text-slate-300 hover:text-white transition-colors">About Us</a>
               <a href="#" className="text-slate-300 hover:text-white py-2">Blog</a>
-              <div className="flex flex-col gap-2 pt-2">
-                <button className="text-slate-300 hover:text-white py-2">Sign In</button>
-                <button className="bg-[#FF6C37] hover:bg-[#FF5500] text-white py-2 rounded-md">
-                  Get Started
-                </button>
-              </div>
             </div>
           </motion.div>
         )}

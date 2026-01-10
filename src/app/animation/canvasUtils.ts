@@ -1,8 +1,6 @@
 import { 
   rectPoints, 
-  trianglePoints,
-  triangleCenter,
-  triangleRadius,
+  trianglePoints, 
   circleCenter, 
   circleRadius, 
   getRedDotPosition, 
@@ -19,7 +17,6 @@ export const drawCanvas = (
 ): void => {
   ctx.clearRect(0, 0, width, height)
   
-  // Faktor scaling dari canvas asli (800x500) ke canvas sekarang
   const scaleX = width / 800
   const scaleY = height / 500
   
@@ -55,7 +52,21 @@ export const drawCanvas = (
     y3: trianglePoints.y3 * scaleY
   }
   
+  // Hitung triangle center dari titik-titik segitiga
+  const triangleCenter = {
+    x: (trianglePoints.x1 + trianglePoints.x2 + trianglePoints.x3) / 3,
+    y: (trianglePoints.y1 + trianglePoints.y2 + trianglePoints.y3) / 3
+  }
   const scaledTriangleCenter = scaleCoord(triangleCenter.x, triangleCenter.y)
+  
+  // Hitung triangle radius sebagai jarak maksimum dari center ke titik sudut
+  const triangleRadius = Math.sqrt(
+    Math.max(
+      Math.pow(trianglePoints.x1 - triangleCenter.x, 2) + Math.pow(trianglePoints.y1 - triangleCenter.y, 2),
+      Math.pow(trianglePoints.x2 - triangleCenter.x, 2) + Math.pow(trianglePoints.y2 - triangleCenter.y, 2),
+      Math.pow(trianglePoints.x3 - triangleCenter.x, 2) + Math.pow(trianglePoints.y3 - triangleCenter.y, 2)
+    )
+  )
   const scaledTriangleRadius = triangleRadius * Math.min(scaleX, scaleY)
   
   // Draw AutoCAD-like dark background
@@ -182,7 +193,6 @@ export const drawCanvas = (
   ctx.font = `${11 * Math.min(scaleX, scaleY)}px Arial`
   
   // Horizontal dimension (above rectangle) - step 20-22
-  // PERBAIKAN: Sinkron dengan command - mulai gambar di step 22 (setelah "Horizontal dimension added")
   if (currentStep >= 22) {
     const dimY = scaledRectPoints.y1 - 30 * scaleY
     
@@ -209,7 +219,6 @@ export const drawCanvas = (
   }
   
   // Vertical dimension (left of rectangle) - step 23-25
-  // PERBAIKAN: Sinkron dengan command - mulai gambar di step 25 (setelah "Vertical dimension added")
   if (currentStep >= 25) {
     const dimX = scaledRectPoints.x1 - 30 * scaleX
     
@@ -240,7 +249,6 @@ export const drawCanvas = (
   }
   
   // Radius dimension for circle - step 26-28
-  // PERBAIKAN: Sinkron dengan command - mulai gambar di step 28 (setelah "Radius dimension added")
   if (currentStep >= 28) {
     const angle = Math.PI / 4 // 45 degrees
     const arrowX = scaledCircleCenter.x + scaledCircleRadius * Math.cos(angle)
@@ -276,29 +284,28 @@ export const drawCanvas = (
     ctx.fillText(`R${circleRadius}.00`, textX + 10 * scaleX, textY - 5 * scaleY)
   }
   
-  // ===== TAMBAHAN UNTUK SEGITIGA (step 30-36) =====
-  // PERBAIKAN: Sinkron dengan command - mulai gambar segitiga setelah command polygon
+  // ===== TAMBAHAN UNTUK SEGITIGA (step 30-38) =====
   if (currentStep >= 30) {
     ctx.strokeStyle = '#FF00FF' // Magenta for triangle - WARNA UNGU
     ctx.lineWidth = 2 * Math.min(scaleX, scaleY)
     
-    // Draw first side - step 34+ (setelah "Specify radius of circle:")
-    if (currentStep >= 34) {
+    // Draw first side - step 32+ (setelah "Specify first point:")
+    if (currentStep >= 32) {
       ctx.beginPath()
       ctx.moveTo(scaledTrianglePoints.x1, scaledTrianglePoints.y1)
       ctx.lineTo(scaledTrianglePoints.x2, scaledTrianglePoints.y2)
       ctx.stroke()
     }
     
-    // Draw second side - step 35+
-    if (currentStep >= 35) {
+    // Draw second side - step 34+
+    if (currentStep >= 34) {
       ctx.beginPath()
       ctx.moveTo(scaledTrianglePoints.x2, scaledTrianglePoints.y2)
       ctx.lineTo(scaledTrianglePoints.x3, scaledTrianglePoints.y3)
       ctx.stroke()
     }
     
-    // Draw third side - step 36+ (menyelesaikan segitiga)
+    // Draw third side dan close - step 36+ (menyelesaikan segitiga)
     if (currentStep >= 36) {
       ctx.beginPath()
       ctx.moveTo(scaledTrianglePoints.x3, scaledTrianglePoints.y3)
@@ -306,15 +313,32 @@ export const drawCanvas = (
       ctx.stroke()
     }
     
-    // Animated triangle drawing (step 33 untuk radius) - animasi lingkaran pembentuk segitiga
-    if (currentStep === 33) {
-      // Draw circumscribed circle untuk triangle
-      ctx.strokeStyle = '#FF00FF'
-      ctx.lineWidth = 1 * Math.min(scaleX, scaleY)
-      ctx.setLineDash([5 * scaleX, 3 * scaleX])
+    // Animated triangle drawing (step 35 untuk vertex 3) 
+    if (currentStep === 35) {
+      // Animasi garis dari vertex 2 ke vertex 3
+      const progress = Math.min(1, (time % 60) / 60)
+      ctx.setLineDash([10 * scaleX, 5 * scaleX])
       ctx.beginPath()
-      const progress = Math.min(1, time * 0.003)
-      ctx.arc(scaledTriangleCenter.x, scaledTriangleCenter.y, scaledTriangleRadius, 0, Math.PI * 2 * progress)
+      ctx.moveTo(scaledTrianglePoints.x2, scaledTrianglePoints.y2)
+      ctx.lineTo(
+        scaledTrianglePoints.x2 + (scaledTrianglePoints.x3 - scaledTrianglePoints.x2) * progress,
+        scaledTrianglePoints.y2 + (scaledTrianglePoints.y3 - scaledTrianglePoints.y2) * progress
+      )
+      ctx.stroke()
+      ctx.setLineDash([])
+    }
+    
+    // Animated closing (step 37)
+    if (currentStep === 37) {
+      // Animasi garis dari vertex 3 kembali ke vertex 1 (close)
+      const progress = Math.min(1, (time % 60) / 60)
+      ctx.setLineDash([10 * scaleX, 5 * scaleX])
+      ctx.beginPath()
+      ctx.moveTo(scaledTrianglePoints.x3, scaledTrianglePoints.y3)
+      ctx.lineTo(
+        scaledTrianglePoints.x3 + (scaledTrianglePoints.x1 - scaledTrianglePoints.x3) * progress,
+        scaledTrianglePoints.y3 + (scaledTrianglePoints.y1 - scaledTrianglePoints.y3) * progress
+      )
       ctx.stroke()
       ctx.setLineDash([])
     }
@@ -322,15 +346,14 @@ export const drawCanvas = (
   // ===============================================
   
   // ===== TAMBAHAN DIMENSI UNTUK SEGITIGA =====
-  // PERBAIKAN: Sinkron dengan command untuk dimensi segitiga
   ctx.strokeStyle = '#FF9900' // Orange untuk dimensi segitiga juga
   ctx.lineWidth = 1 * Math.min(scaleX, scaleY)
   ctx.fillStyle = '#FF9900'
   ctx.font = `${11 * Math.min(scaleX, scaleY)}px Arial`
   
-  // Aligned dimension for triangle side 1 - step 37-39
-  // Mulai gambar setelah "Aligned dimension added" pertama (step 39)
-  if (currentStep >= 39) {
+  // Aligned dimension for triangle side 1 - step 39-41
+  // Mulai gambar setelah "Aligned dimension added" pertama (step 41)
+  if (currentStep >= 41) {
     // Side 1 (x1,y1 to x2,y2)
     const midX1 = (scaledTrianglePoints.x1 + scaledTrianglePoints.x2) / 2
     const midY1 = (scaledTrianglePoints.y1 + scaledTrianglePoints.y2) / 2
@@ -368,9 +391,9 @@ export const drawCanvas = (
     ctx.restore()
   }
   
-  // Aligned dimension for triangle side 2 - step 40-42
-  // Mulai gambar setelah "Aligned dimension added" kedua (step 42)
-  if (currentStep >= 42) {
+  // Aligned dimension for triangle side 2 - step 42-44
+  // Mulai gambar setelah "Aligned dimension added" kedua (step 44)
+  if (currentStep >= 44) {
     // Side 2 (x2,y2 to x3,y3)
     const midX2 = (scaledTrianglePoints.x2 + scaledTrianglePoints.x3) / 2
     const midY2 = (scaledTrianglePoints.y2 + scaledTrianglePoints.y3) / 2
@@ -407,9 +430,9 @@ export const drawCanvas = (
     ctx.restore()
   }
   
-  // Aligned dimension for triangle side 3 - step 43-45
-  // Mulai gambar setelah "Aligned dimension added" ketiga (step 45)
-  if (currentStep >= 45) {
+  // Aligned dimension for triangle side 3 - step 45-47
+  // Mulai gambar setelah "Aligned dimension added" ketiga (step 47)
+  if (currentStep >= 47) {
     // Side 3 (x3,y3 to x1,y1)
     const midX3 = (scaledTrianglePoints.x3 + scaledTrianglePoints.x1) / 2
     const midY3 = (scaledTrianglePoints.y3 + scaledTrianglePoints.y1) / 2
@@ -446,8 +469,7 @@ export const drawCanvas = (
     ctx.restore()
   }
   // ===========================================
-  
-  // Draw red tracking dot - PERBAIKAN: Gunakan scaling
+
   const rawDotPos: DotPosition = getRedDotPosition(currentStep)
   const scaledDotPos = {
     x: rawDotPos.x * scaleX,
@@ -463,7 +485,7 @@ export const drawCanvas = (
   let displayY = scaledDotPos.y
   
   // Animate dot movement if needed
-  if (scaledDotPos.animating && currentStep < 45) {
+  if (scaledDotPos.animating && currentStep < 47) {
     const animProgress = Math.min(1, (time % 60) / 60)
     displayX = (scaledDotPos.fromX || 0) + ((scaledDotPos.toX || 0) - (scaledDotPos.fromX || 0)) * animProgress
     displayY = (scaledDotPos.fromY || 0) + ((scaledDotPos.toY || 0) - (scaledDotPos.fromY || 0)) * animProgress

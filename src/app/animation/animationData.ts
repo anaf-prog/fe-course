@@ -56,42 +56,34 @@ export const animationSteps: AnimationStep[] = [
   { cmd: "Specify radius:", delay: 700 },
   { cmd: "80", delay: 1200 }, // RADIUS 80
   { cmd: "Command: _DIMLINEAR", delay: 1000 },
-  { cmd: "Specify first extension line origin:", delay: 700 },
   { cmd: "Select horizontal line", delay: 600 },
   { cmd: "Horizontal dimension added", delay: 1500 },
   { cmd: "Command: _DIMLINEAR", delay: 1000 },
-  { cmd: "Specify first extension line origin:", delay: 700 },
   { cmd: "Select vertical line", delay: 600 },
   { cmd: "Vertical dimension added", delay: 1500 },
   { cmd: "Command: _DIMRADIUS", delay: 1000 },
   { cmd: "Select arc or circle:", delay: 700 },
   { cmd: "Radius dimension added", delay: 1500 },
   // ===== TAMBAHAN SEGITIGA =====
-  { cmd: "Command: _POLYGON", delay: 1000 },
-  { cmd: "Enter number of sides:", delay: 700 },
-  { cmd: "3", delay: 600 }, // SEGITIGA
-  { cmd: "Specify center of polygon:", delay: 700 },
-  { cmd: "150,300", delay: 600 }, // CENTER SEGITIGA (kiri dari rectangle)
-  { cmd: "Enter an option [Inscribed/Circumscribed]:", delay: 700 },
-  { cmd: "I", delay: 600 }, // INSCRIBED IN CIRCLE
-  { cmd: "Specify radius of circle:", delay: 700 },
-  { cmd: "60", delay: 1200 }, // RADIUS 60
+  { cmd: "Command: _LINE", delay: 1000 },
+  { cmd: "Specify first point:", delay: 700 },
+  { cmd: "150,240", delay: 600 }, // VERTEX 1 (kiri atas)
+  { cmd: "Specify next point:", delay: 700 },
+  { cmd: "90,360", delay: 800 }, // VERTEX 2 (bawah kiri)
+  { cmd: "Specify next point:", delay: 700 },
+  { cmd: "210,360", delay: 800 }, // VERTEX 3 (bawah kanan)
+  { cmd: "Specify next point:", delay: 700 },
+  { cmd: "C", delay: 1000 }, // CLOSE SEGITIGA
   { cmd: "Command: _DIMALIGNED", delay: 1000 },
-  { cmd: "Specify first extension line origin:", delay: 700 },
   { cmd: "Select triangle side 1", delay: 600 },
   { cmd: "Aligned dimension added", delay: 1500 },
   { cmd: "Command: _DIMALIGNED", delay: 1000 },
-  { cmd: "Specify first extension line origin:", delay: 700 },
   { cmd: "Select triangle side 2", delay: 600 },
   { cmd: "Aligned dimension added", delay: 1500 },
   { cmd: "Command: _DIMALIGNED", delay: 1000 },
-  { cmd: "Specify first extension line origin:", delay: 700 },
   { cmd: "Select triangle side 3", delay: 600 },
   { cmd: "Aligned dimension added", delay: 1500 },
   // =============================
-  { cmd: "Command: _ZOOM", delay: 800 },
-  { cmd: "All/Center/Dynamic/Extents/...", delay: 800 },
-  { cmd: "E", delay: 1000 },
   { cmd: "Regenerating model...", delay: 2000 },
 ]
 
@@ -111,9 +103,6 @@ export const trianglePoints: TrianglePoints = {
   x2: 90, y2: 360,   // Vertex 2 (bawah kiri)
   x3: 210, y3: 360   // Vertex 3 (bawah kanan)
 }
-
-export const triangleCenter = { x: 150, y: 300 } // Center of triangle
-export const triangleRadius = 60
 
 export const circleCenter: CircleCenter = { x: 400, y: 300 } // Center of rectangle
 export const circleRadius: number = 80
@@ -139,10 +128,14 @@ export const getRedDotPosition = (currentStep: number): DotPosition => {
     case 18: // Circle radius
       return { x: 480, y: 300, animating: true, fromX: 400, fromY: 300, toX: 480, toY: 300 }
     // ===== TAMBAHAN UNTUK SEGITIGA =====
-    case 31: // Triangle center point
-      return { x: 150, y: 300 }
-    case 33: // Triangle radius
-      return { x: 150, y: 240, animating: true, fromX: 150, fromY: 300, toX: 150, toY: 240 }
+    case 31: // Triangle vertex 1
+      return { x: 150, y: 240 }
+    case 33: // Triangle vertex 2
+      return { x: 90, y: 360, animating: true, fromX: 150, fromY: 240, toX: 90, toY: 360 }
+    case 35: // Triangle vertex 3
+      return { x: 210, y: 360, animating: true, fromX: 90, fromY: 360, toX: 210, toY: 360 }
+    case 37: // Close triangle
+      return { x: 150, y: 240, animating: true, fromX: 210, fromY: 360, toX: 150, toY: 240 }
     // ==================================
     default:
       return { x: 400, y: 300 } // Default position
