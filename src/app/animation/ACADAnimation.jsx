@@ -185,33 +185,6 @@ const ACADAnimation = () => {
         </div>
 
         <div className="flex flex-col lg:flex-row">
-          {/* Command Display untuk mobile */}
-          {isMobile && (
-            <div className="w-full px-3 pt-3 pb-2 bg-gray-900/80 border-b border-gray-800">
-              <div className="bg-black/90 border border-gray-700 px-3 py-2 rounded text-xs font-mono backdrop-blur-sm">
-                <div className="text-green-400 text-xs">
-                  Command: <span className="text-cyan-200">{commandText}</span>
-                  <span className={`ml-1 ${showCursor ? 'opacity-100' : 'opacity-0'}`}>▌</span>
-                </div>
-                <div className="text-gray-400 mt-1 flex justify-between items-center">
-                  <span className="text-xs">
-                    {currentStep < animationSteps.length ? 
-                      `Step ${currentStep + 1}/${animationSteps.length}` : 
-                      'Complete - Restarting...'}
-                  </span>
-                  <span className="text-cyan-300 text-xs truncate ml-2">
-                    {currentStep < 6 ? 'Setting up...' :
-                    currentStep < 15 ? 'Drawing Rectangle' : 
-                    currentStep < 20 ? 'Drawing Circle' : 
-                    currentStep < 30 ? 'Adding Dimensions' : 
-                    currentStep < 37 ? 'Drawing Triangle' :
-                    currentStep < 46 ? 'Adding Triangle Dims' :
-                    'Zooming & Complete'}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Main Drawing Area */}
           <div className="lg:w-3/4 p-3 sm:p-6">
